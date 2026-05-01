@@ -1,6 +1,7 @@
 import { useState } from "react";
-const Player = ({ name, symbol }) => {
+const Player = ({ initialName, symbol }) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [playerName, setPlayerName] = useState(initialName);
 
   const handleEditClick = () => {
     // setIsEditing(isEditing ? false : true);
@@ -8,17 +9,22 @@ const Player = ({ name, symbol }) => {
     // because react schedule state update, you can not use the current value of isEditing
     setIsEditing((editing) => !editing);
   };
+  const handleChange = (e) => {
+    setPlayerName(e.target.value);
+  };
 
-  let playerName = <span className="player-name">{name}</span>;
+  let editablePlayerName = <span className="player-name">{playerName}</span>;
 
   if (isEditing) {
-    playerName = <input type="text" required defaultValue={name} />;
+    editablePlayerName = (
+      <input type="text" required value={playerName} onChange={handleChange} />
+    );
   }
 
   return (
     <li>
       <span className="player">
-        {playerName}
+        {editablePlayerName}
         <span className="player-symbol">{symbol}</span>
       </span>
       <button onClick={handleEditClick}>{isEditing ? "Save" : "Edit"}</button>

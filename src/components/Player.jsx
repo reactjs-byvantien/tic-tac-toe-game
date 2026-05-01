@@ -3,18 +3,21 @@ const Player = ({ name, symbol }) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const handleEditClick = () => {
-    setIsEditing(true);
+    // setIsEditing(isEditing ? false : true);
+    // setIsEditing(!isEditing);
+    // because react schedule state update, you can not use the current value of isEditing
+    setIsEditing((editing) => !editing);
   };
 
   let playerName = <span className="player-name">{name}</span>;
 
   if (isEditing) {
-    playerName = <input type="text" required />;
+    playerName = <input type="text" required defaultValue={name} />;
   }
 
   return (
     <li>
-      <span>
+      <span className="player">
         {playerName}
         <span className="player-symbol">{symbol}</span>
       </span>

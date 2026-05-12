@@ -4,6 +4,11 @@ import Player from "./components/Player";
 import Log from "./components/Log";
 import { WINNING_COMBINATIONS } from "./winning_combinations";
 
+const initialGameBoard = [
+  [null, null, null],
+  [null, null, null],
+  [null, null, null],
+];
 function deriveActivePlayer(gameTurns) {
   let currentPlayer = "x";
   if (gameTurns.length > 0 && gameTurns[0].player === "x") {
@@ -13,10 +18,21 @@ function deriveActivePlayer(gameTurns) {
 }
 function App() {
   // const [activePlayer, setActivePlayer] = useState("x");
+  // const [hasWinner, setHasWinner] = useState(false);
   const [gameTurns, setGameTurns] = useState([]);
   const activePlayer = deriveActivePlayer(gameTurns);
   console.log(gameTurns);
-
+  let gameBoard = initialGameBoard;
+  for (const turn of gameTurns) {
+    const { square, player } = turn;
+    const { row, col } = square;
+    gameBoard[row][col] = player;
+  }
+  for (const combination of WINNING_COMBINATIONS) {
+    const firstSquareSymbol;
+    const secondSquareSymbol;
+    const thirdSquareSymbol;
+  }
   const handleSelectSquare = (rowIndex, colIndex) => {
     // const currentPlayer = activePlayer;
 
@@ -60,7 +76,7 @@ function App() {
         </ol>
         <GameBoard
           onSelectSquare={handleSelectSquare}
-          turns={gameTurns}
+          board={gameBoard}
           // activePlayerSymbol={activePlayer}
         />
       </div>

@@ -14,6 +14,8 @@ function App() {
   // const [activePlayer, setActivePlayer] = useState("x");
   const [gameTurns, setGameTurns] = useState([]);
   const activePlayer = deriveActivePlayer(gameTurns);
+  console.log(gameTurns);
+
   const handleSelectSquare = (rowIndex, colIndex) => {
     // const currentPlayer = activePlayer;
 
@@ -39,6 +41,7 @@ function App() {
       return updatedTurns;
     });
   };
+  console.log("objectify then:", gameTurns);
   return (
     <main>
       <div id="game-container">

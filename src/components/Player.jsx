@@ -1,13 +1,13 @@
 import { useState } from "react";
-const Player = ({ initialName, symbol, isActive }) => {
+const Player = ({ initialName, symbol, isActive, onChangeName }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [playerName, setPlayerName] = useState(initialName);
 
   const handleEditClick = () => {
-    // setIsEditing(isEditing ? false : true);
-    // setIsEditing(!isEditing);
-    // because react schedule state update, you can not use the current value of isEditing
     setIsEditing((editing) => !editing);
+    if (isEditing) {
+      onChangeName(symbol, playerName);
+    }
   };
   const handleChange = (e) => {
     setPlayerName(e.target.value);
@@ -28,17 +28,6 @@ const Player = ({ initialName, symbol, isActive }) => {
         <span className="player-symbol">{symbol}</span>
       </span>
       <button onClick={handleEditClick}>{isEditing ? "Save" : "Edit"}</button>
-      {/* <span>
-        {isEditing ? <input type="text" required /> : name}
-        <span className="player-symbol">{symbol}</span>
-      </span>
-      <button
-        onClick={() => {
-          setIsEditing(true);
-        }}
-      >
-        Edit
-      </button> */}
     </li>
   );
 };

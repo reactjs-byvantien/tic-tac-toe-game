@@ -3,8 +3,13 @@ import GameBoard from "./components/GameBoard";
 import Player from "./components/Player";
 import Log from "./components/Log";
 import { WINNING_COMBINATIONS } from "./winning_combinations";
+import GameOver from "./components/GameOver";
 
-const initialGameBoard = [
+const PLAYERS = {
+  x: "Player 1",
+  o: "Player 2",
+};
+const INITIAL_GAME_BOARD = [
   [null, null, null],
   [null, null, null],
   [null, null, null],
@@ -17,53 +22,43 @@ function deriveActivePlayer(gameTurns) {
   }
   return currentPlayer;
 }
-function App() {
-  // const [activePlayer, setActivePlayer] = useState("x");
-  // const [hasWinner, setHasWinner] = useState(false);
-  const [gameTurns, setGameTurns] = useState([]);
-
-  const activePlayer = deriveActivePlayer(gameTurns);
-  console.log(gameTurns);
-
-  let gameBoard = initialGameBoard;
+function deriveGameBoard(gameTurns) {
+  let gameBoard = [...INITIAL_GAME_BOARD.map((array) => [...array])];
   for (const turn of gameTurns) {
     const { square, player } = turn;
     const { row, col } = square;
     gameBoard[row][col] = player;
   }
-
+  return gameBoard;
+}
+function deriveWinner(gameBoard, players) {
   let winner;
+
   for (const combination of WINNING_COMBINATIONS) {
     const firstSquareSymbol = gameBoard[combination[0].row][combination[0].col];
     const secondSquareSymbol =
       gameBoard[combination[1].row][combination[1].col];
     const thirdSquareSymbol = gameBoard[combination[2].row][combination[2].col];
-
+    console.log(firstSquareSymbol, secondSquareSymbol, thirdSquareSymbol);
     if (
       firstSquareSymbol &&
       firstSquareSymbol === secondSquareSymbol &&
       firstSquareSymbol === thirdSquareSymbol
     ) {
-      winner = firstSquareSymbol;
+      winner = players[firstSquareSymbol];
     }
   }
+  return winner;
+}
+function App() {
+  const [gameTurns, setGameTurns] = useState([]);
+  const [players, setPlayers] = useState(PLAYERS);
+
+  const gameBoard = deriveGameBoard(gameTurns);
+  const winner = deriveWinner(gameBoard, players);
+  const hasDraw = gameTurns.length == 9 && !winner;
 
   const handleSelectSquare = (rowIndex, colIndex) => {
-    // const currentPlayer = activePlayer;
-
-    // setActivePlayer(currentPlayer === "x" ? "o" : "x");
-
-    // setGameTurns((prevTurns) => [
-    //   {
-    //     square: { row: rowIndex, col: colIndex },
-    //     player: currentPlayer,
-    //   },
-    //   ...prevTurns,
-    // ]);
-    // setActivePlayer((currentActivePlayer) =>
-    //   currentActivePlayer === "x" ? "o" : "x",
-    // );
-
     setGameTurns((prevTurns) => {
       const currentPlayer = deriveActivePlayer(prevTurns);
       const updatedTurns = [
@@ -73,28 +68,36 @@ function App() {
       return updatedTurns;
     });
   };
-  console.log("objectify then:", gameTurns);
+  const handleRestart = () => setGameTurns([]);
+  const handlePlayerNameChange = (symbol, newName) => {
+    setPlayers((prevPlayers) => {
+      return {
+        ...prevPlayers,
+        [symbol]: newName,
+      };
+    });
+  };
   return (
     <main>
       <div id="game-container">
         <ol id="players" className="highlight-player">
           <Player
-            initialName="Player 1"
+            initialName={players.x}
             symbol="x"
-            isActive={activePlayer === "x"}
+            isActive={players.x === "x"}
+            onChangeName={handlePlayerNameChange}
           />
           <Player
-            initialName="Player 2"
+            initialName={players.o}
             symbol="o"
-            isActive={activePlayer === "o"}
+            isActive={players.o === "o"}
+            onChangeName={handlePlayerNameChange}
           />
         </ol>
-        {winner && <p>You won, {winner}!</p>}
-        <GameBoard
-          onSelectSquare={handleSelectSquare}
-          board={gameBoard}
-          // activePlayerSymbol={activePlayer}
-        />
+        {(winner || hasDraw) && (
+          <GameOver winner={winner} onRestart={handleRestart} />
+        )}
+        <GameBoard onSelectSquare={handleSelectSquare} board={gameBoard} />
       </div>
       <Log turns={gameTurns} />
     </main>

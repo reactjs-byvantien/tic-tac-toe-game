@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import GameBoard from "./components/GameBoard";
 import Player from "./components/Player";
 import Log from "./components/Log";
@@ -39,40 +39,43 @@ function App() {
       };
     });
   };
-  const driverObj = driver({
-    showProgress: true,
-    steps: [
-      {
-        element: "#players",
-        popover: {
-          title: "Players",
-          description: "Current players here",
+  useEffect(() => {
+    const driverObj = driver({
+      showProgress: true,
+      steps: [
+        {
+          element: "#players",
+          popover: {
+            title: "Players",
+            description: "Current players here",
+          },
         },
-      },
-      {
-        element: "#game-board",
-        popover: {
-          title: "Game Board",
-          description: "Select a square to make your move",
+        {
+          element: "#game-board",
+          popover: {
+            title: "Game Board",
+            description: "Select a square to make your move",
+          },
         },
-      },
-      {
-        element: "#log",
-        popover: {
-          title: "Log",
-          description: "View the game log",
+        {
+          element: "#log",
+          popover: {
+            title: "Log",
+            description: "View the game log",
+          },
         },
-      },
-      {
-        element: "#game-over",
-        popover: {
-          title: "Game Over",
-          description: "See the result and start a new game",
+        {
+          element: "#game-over",
+          popover: {
+            title: "Game Over",
+            description: "See the result and start a new game",
+          },
         },
-      },
-    ],
-  });
-  driverObj.drive();
+      ],
+    });
+    driverObj.drive();
+  }, []);
+
   return (
     <main>
       <div id="game-container">
